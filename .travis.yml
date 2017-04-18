@@ -12,7 +12,7 @@ env:
     - DJANGO_SETTINGS_MODULE=djClassSchedule.settings
     - DEBUG=on
     - SECRET_KEY=not-so-secret
-    - DATABASE_URL=postgres://postgres/@localhost:5432/travisci
+    - DATABASE_URL=postgres://postgres:@localhost:5432/travisci
     - CACHE_URL=locmemcache://
     - SEARCH_URL=simple://
     - BANNER_CONNECTION_URL=username/pass@bannerurl:port/databaseID
