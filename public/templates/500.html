@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>{% block page_title %}{% trans '500 Error' %}{% endblock %} &middot; {% trans 'Eckerd College' %}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="class schedule">
+		<link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
+		<link href="{% static "css/styles.css" %}" rel="stylesheet">
+		<link rel="shortcut icon" type="image/ico" href="{% static "img/favicon.ico" %}" />
+		{% block extra_css %}{% endblock %}
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<h3 style="color:#007D91;">{% trans 'Ooops! It looks like the resource you request is not available' %}</h3>
+				</div>
+			</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
+		<script type="text/javascript" language="javascript" src="{% static "js/bootstrap.min.js" %}"></script>
+	</body>
+</html>

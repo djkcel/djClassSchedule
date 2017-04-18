@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block extra_js %}
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>{{ selected_pel_term_desc.0 }}</h2>
+        <br/>
+        <p><a href="{% url 'localsite' %}">{% trans "Change Term" %}</a></p>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{% trans 'You Selected' %}</h3>
+            </div>
+            <div class="panel-body">
+                <p>{% trans 'Subject' %}: {{ the_subject.1 }}</p>
+                <p>{% trans 'Instructor' %}: {{ the_instructor.1 }}</p>
+                <p>{% trans 'Academic Area / Perspective' %}: {{ the_area.1 }}</p>
+                <p>{% trans 'Specialized Search' %}: {{ the_specialized.1 }}</p>
+                <p>{% trans 'Campus' %}: {{ the_campus.1 }}</p>
+            </div>
+        </div>
+        <p><a class="btn btn-warning" href="{% url 'course_search_pel' term ptrm %}">{% trans "Search Again" %}</a></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+    <hr/>
+    </div>
+</div>
+{% if sections %}
+<div class="row">
+    <div class="col-md-12">
+        {% for section in sections %}
+        <div id="no-more-tables">
+            <table class="table table-striped cf table-bordered">
+                <caption class="text-left"><strong>{{ section.0 }}</strong></caption>
+                <thead>
+                    <tr>
+                        <th>CRN</th>
+                        <th>Subj</th>
+                        <th>Course</th>
+                        <th>Sec</th>
+                        <th>Cmp</th>
+                        <th>Cred</th>
+                        <th>Title</th>
+                        <th>Days</th>
+                        <th>Time</th>
+                        <th>Cap</th>
+                        <th>Act</th>
+                        <th>Rem</th>
+                        <th>Instructor</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-title="CRN">{{ section.1 }}</td>
+                        <td data-title="Subj">{{ section.2 }}</td>
+                        <td data-title="Course">{{ section.3 }}</td>
+                        <td data-title="Sec">{{ section.4 }}</td>
+                        <td data-title="Cmp">{{ section.5 }}</td>
+                        <td data-title="Cred">{{ section.6 }}</td>
+                        <td data-title="Title"><a data-toggle="modal" href="#{{ section.1 }}">{{ section.7 }}</a></td>
+                        <td data-title="Days">{{ section.8 }}</td>
+                        <td data-title="Time">{{ section.9 }}</td>
+                        <td data-title="Cap">{{ section.10 }}</td>
+                        <td data-title="Act">{{ section.11 }}</td>
+                        <td data-title="Rem">{{ section.12 }}</td>
+                        <td data-title="Instructor">{{ section.13 }}</td>
+                        <td data-title="Date">{{ section.14 }}</td>
+                        <td data-title="Location">{{ section.15 }}</td>
+                    </tr>
+                    {% if section.16 %}
+                    <tr>
+                        <td data-title="prereq" colspan="15"><span class="prereq">{{ section.16 }}</span></td>
+                    </tr>
+                    {% endif %}
+                    {% if section.17 %}
+                    <tr>
+                        <td data-title="notes" colspan="15">{{ section.17 }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-md-12">
+        <p><strong><em>{% trans "No courses were found for your search" %}</em></strong></strong></p>
+    </div>
+</div>
+{% endif %}
+
+{% for section in sections%}
+<!-- Modal -->
+<div class="modal fade" id="{{ section.1 }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{ section.18 }}</h4>
+            </div>
+            <div class="modal-body">
+                <h3>{{ section.7 }}</h3>
+                <p><strong>CRN:</strong> {{ section.1 }}</p>
+                {% if section.16 %}
+                <p><strong>Prereqs:</strong> {{ section.16 }}</p>
+                {% endif %}
+                <p><strong>Instructor:</strong> {{ section.13 }}</p>
+                <p><strong>Campus:</strong> {{ section.5 }}</p>
+                <p><strong>Meets:</strong> {{ section.8 }} {{ section.9 }} @ {{ section.15 }}</p>
+                <p><strong>Remaining Seats:</strong> {{ section.12 }} ({{ section.11 }}/{{ section.10 }})</p>
+                <p><strong>Credits:</strong> {{ section.6 }}</p>
+                <p><strong>Course Description:</strong> {{ section.22 }}</p>
+                {% if section.17 %}
+                <p><strong>Note:</strong> {{ section.17 }}</p>
+                {% endif %}
+                <form name="textbooks_{{ section.1 }}" method="post" action="http://eckerd.bncollege.com/webapp/wcs/stores/servlet/TBListView " target="_blank"">
+                    <input type="hidden" name="storeId"   value="51053"/>
+					<input type="hidden" name="catalogId" value="10001"/>
+                    <input type="hidden" name="langId"    value="-1"/>
+                    <input type="hidden" name="termMapping" value="N" />
+                    <input type="hidden" name="courseXml" value='<?xml version="1.0" encoding="UTF-8"?><textbookorder><school id="494"></school><courses><course dept="{{ section.2 }}" num="{{ section.3 }}" sect="{{ section.4 }}" term="{{ section.21 }}" ></course></courses></textbookorder>"' />
+                    <input class="btn btn-warning" type="submit" value="Go to Bookstore Website">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endfor %}
+{% endblock %}

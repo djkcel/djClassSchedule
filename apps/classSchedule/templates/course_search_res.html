@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>{{ selected_res_term_desc.0 }}</h2>
+        <br/>
+        <p><a href="{% url 'localsite' %}">{% trans "Change Term" %}</a></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <br/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <form action="" method="post">{% csrf_token %}
+            <fieldset>
+                <legend>{% trans "Course Search" %}</legend>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="subject">{% trans "Subject" %}:</label>
+                        <select id="subject" class="form-control" name="subject">
+                            {% if subjects %}
+                            <option label="All" value="0|All">{% trans "All" %}</option>
+                            {% endif %}
+                            {% for subject in subjects %}
+                            <option label="{{ subject.2 }}" value="{{ subject.1 }}|{{subject.2}}">{{ subject.2 }}</option>
+                            {% empty %}
+                            <option label="None" value="0|All"></option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="area">{% trans "Academic Area" %} / {% trans "Perspective" %}</label>
+                        <select id="area" class="form-control" name="area">
+                            {% if prespective_areas %}
+                            <option label="All" value="0|All">{% trans "All" %}</option>
+                            {% endif %}
+                            {% for area in prespective_areas %}
+                            <option label="{{ area.1 }}" value="{{ area.0 }}|{{ area.1 }}">{{ area.1 }}</option>
+                            {% empty %}
+                            <option label="None" value="0|All"></option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="instructor">{% trans "Instructor" %}:</label>
+                        <select id="instructor" class="form-control" name="instructor">
+                            {% if instructors %}
+                            <option label="All" value="0|All">{% trans "All" %}</option>
+                            {% endif %}
+                            {% for instructor in instructors %}
+                            <option label="{{ instructor.2 }}" value="{{ instructor.2 }}|{{ instructor.2 }}">{{ instructor.2 }}</option>
+                            {% empty %}
+                            <option label="None" value="0|All"></option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="specialized">{% trans "Specialized Search" %}:</label>
+                        <select id="specialized" class="form-control" name="specialized">
+                            {% if res_specialized %}
+                            <option label="All" value="0|All">{% trans "All" %}</option>
+                            {% endif %}
+                            {% for special in res_specialized %}
+                            <option label="{{ special.1 }}" value="{{ special.0 }}|{{special.1}}">{{special.1}}</option>
+                            {% empty %}
+                            <option label="None" value="0|All"></option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="open_only" name="open_only">{% trans "Display Open Classes Only" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <button type="submit" class="btn btn-success">{% trans "Search" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

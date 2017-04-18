@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_title %}{% trans '404 Error' %}{% endblock %}
+{% block content %}
+<!-- Begin page content -->
+<div class="row">
+    <div class="span12">
+        <p>{% trans 'We are sorry, but the resource you requested is not available' %}.</p>
+        <p>{% trans 'Please click' %} <a href="{% url 'localsite' %}">{% trans 'here' %}</a> {% trans 'to return to the home page' %}.</p>
+    </div>
+</div>
+{% endblock %}

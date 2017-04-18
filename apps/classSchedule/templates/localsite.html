@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h4>{% trans "Residential Course Schedules" %}</h4>
+        <ul>
+            {% for res_term in res_terms %}
+            <li><a href="{% url 'course_search_res' res_term.0 res_term.1 %}">{{ res_term.2 }}</a></li>
+            {% empty %}
+            <li>{% trans "No Residential Terms Found" %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h4>{% trans "PEL Course Schedules" %}</h4>
+        <ul>
+            {% for pel_term in pel_terms %}
+            <li><a href="{% url 'course_search_pel' pel_term.0 pel_term.1 %}">{{ pel_term.2 }}</a></li>
+            {% empty %}
+            <li>{% trans "No pel terms were found." %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
