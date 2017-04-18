@@ -4,6 +4,7 @@ python:
   - 3.5
   - 3.6
   - nightly
+sudo: required
 
 services: postgresql
 
@@ -15,13 +16,32 @@ env:
     - DATABASE_URL=postgres://postgres:@localhost:5432/travisci
     - CACHE_URL=locmemcache://
     - SEARCH_URL=simple://
-    - BANNER_CONNECTION_URL=username/pass@bannerurl:port/databaseID
-    - PIP_USE_MIRRORS=true
+    - BANNER_CONNECTION_URL=$USER/@localhost:1521/
+
+    - ORACLE_COOKIE=sqldev
+    - ORACLE_FILE=oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip
+    - ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
+    - ORACLE_SID=XE
+    - PATH=$PATH:$ORACLE_HOME/bin
+    - LD_LIBRARY_PATH=$ORACLE_HOME/lib
+    - NLS_LANG=American_America.UTF8
   matrix:
     - DJANGO_VERSION=1.11
 
 # command to install dependencies
 install:
+  # Install Oracle
+  - |
+    if [ -z "$ORACLE_LOGIN_ssousername" -o -z "$ORACLE_LOGIN_password" ]; then
+      echo ORACLE_LOGIN_ssousername or ORACLE_LOGIN_password are not set ;
+      echo Oracle XE can not be installed ;
+      exit 101 ;
+    fi
+  - wget 'https://github.com/cbandy/travis-oracle/archive/v2.0.1.tar.gz'
+  - mkdir -p .travis/oracle
+  - tar x -C .travis/oracle --strip-components=1 -f v2.0.1.tar.gz
+  - .travis/oracle/download.sh
+  - .travis/oracle/install.sh
   - pip install -r requirements.txt
   - pip install django==$DJANGO_VERSION --quiet
   - pip install psycopg2 --quiet
