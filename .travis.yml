@@ -16,8 +16,8 @@ env:
     - PATH=$PATH:$ORACLE_HOME/bin
     - LD_LIBRARY_PATH=$ORACLE_HOME/lib
     - NLS_LANG=American_America.UTF8
-    - DB_USER=user
-    - DB_PASS=pass
+    - DB_USER=oracleuser
+    - DB_PASS=oraclepass
 
     - DJANGO_SETTINGS_MODULE=djClassSchedule.settings
     - DEBUG=on
