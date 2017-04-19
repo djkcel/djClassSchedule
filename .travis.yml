@@ -1,35 +1,57 @@
 language: python
 python:
-  - 2.7
   - 3.5
   - 3.6
   - nightly
+sudo: required
 
 services: postgresql
 
 env:
   global:
+    - ORACLE_COOKIE=sqldev
+    - ORACLE_FILE=oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip
+    - ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
+    - ORACLE_SID=XE
+    - PATH=$PATH:$ORACLE_HOME/bin
+    - LD_LIBRARY_PATH=$ORACLE_HOME/lib
+    - NLS_LANG=American_America.UTF8
+    - DB_USER=oracleuser
+    - DB_PASS=oraclepass
+
     - DJANGO_SETTINGS_MODULE=djClassSchedule.settings
     - DEBUG=on
     - SECRET_KEY=not-so-secret
-    - DATABASE_URL=postgres://postgres/@localhost:5432/travisci
+    - DATABASE_URL=postgres://postgres@localhost:5432/mydb
     - CACHE_URL=locmemcache://
     - SEARCH_URL=simple://
-    - BANNER_CONNECTION_URL=username/pass@bannerurl:port/databaseID
-    - PIP_USE_MIRRORS=true
+    - BANNER_CONNECTION_URL=$DB_USER/$DB_PASS@localhost:1521/XE
+
   matrix:
     - DJANGO_VERSION=1.11
-    - DJANGO_VERSION=1.10.7
-    - DJANGO_VERSION=1.8.18
 
 # command to install dependencies
 install:
-  - pip install -r test_requirements.txt
+  # Install Oracle
+  - wget 'https://github.com/cbandy/travis-oracle/archive/v2.0.2.tar.gz'
+  - mkdir -p .travis/oracle
+  - tar x -C .travis/oracle --strip-components=1 -f v2.0.2.tar.gz
+  - .travis/oracle/download.sh
+  - .travis/oracle/install.sh
+
+  - pip install -r requirements.txt
   - pip install django==$DJANGO_VERSION --quiet
   - pip install psycopg2 --quiet
 
 before_script:
   - psql -c "CREATE DATABASE mydb;" -U postgres
+  - |
+    sqlplus -L -S / AS SYSDBA <<SQL
+    create user $DB_USER identified by $DB_PASS quota unlimited on USERS default tablespace USERS;
+    grant create session, create procedure, create type, create table, create sequence, create view to ${DB_USER};
+    grant select any dictionary to ${DB_USER};
+    exit
+    SQL
 
 script:
   - python manage.py migrate --noinput
