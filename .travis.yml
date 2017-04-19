@@ -1,6 +1,5 @@
 language: python
 python:
-  - 2.7
   - 3.5
   - 3.6
   - nightly
@@ -10,14 +9,6 @@ services: postgresql
 
 env:
   global:
-    - DJANGO_SETTINGS_MODULE=djClassSchedule.settings
-    - DEBUG=on
-    - SECRET_KEY=not-so-secret
-    - DATABASE_URL=postgres://postgres@localhost:5432/mydb
-    - CACHE_URL=locmemcache://
-    - SEARCH_URL=simple://
-    - BANNER_CONNECTION_URL=$USER@localhost:1521/
-
     - ORACLE_COOKIE=sqldev
     - ORACLE_FILE=oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip
     - ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
@@ -25,6 +16,17 @@ env:
     - PATH=$PATH:$ORACLE_HOME/bin
     - LD_LIBRARY_PATH=$ORACLE_HOME/lib
     - NLS_LANG=American_America.UTF8
+    - DB_USER=user
+    - DB_PASS=pass
+
+    - DJANGO_SETTINGS_MODULE=djClassSchedule.settings
+    - DEBUG=on
+    - SECRET_KEY=not-so-secret
+    - DATABASE_URL=postgres://postgres@localhost:5432/mydb
+    - CACHE_URL=locmemcache://
+    - SEARCH_URL=simple://
+    - BANNER_CONNECTION_URL=$DB_USER/$DB_PASS@localhost:1521/XE
+
   matrix:
     - DJANGO_VERSION=1.11
 
@@ -43,6 +45,13 @@ install:
 
 before_script:
   - psql -c "CREATE DATABASE mydb;" -U postgres
+  - |
+    sqlplus -L -S / AS SYSDBA <<SQL
+    create user $DB_USER identified by $DB_PASS quota unlimited on USERS default tablespace USERS;
+    grant create session, create procedure, create type, create table, create sequence, create view to ${DB_USER};
+    grant select any dictionary to ${DB_USER};
+    exit
+    SQL
 
 script:
   - python manage.py migrate --noinput
