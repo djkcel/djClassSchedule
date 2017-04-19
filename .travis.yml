@@ -31,15 +31,9 @@ env:
 # command to install dependencies
 install:
   # Install Oracle
-  - |
-    if [ -z "$ORACLE_LOGIN_ssousername" -o -z "$ORACLE_LOGIN_password" ]; then
-      echo ORACLE_LOGIN_ssousername or ORACLE_LOGIN_password are not set ;
-      echo Oracle XE can not be installed ;
-      exit 101 ;
-    fi
-  - wget 'https://github.com/cbandy/travis-oracle/archive/v2.0.1.tar.gz'
+  - wget 'https://github.com/cbandy/travis-oracle/archive/v2.0.2.tar.gz'
   - mkdir -p .travis/oracle
-  - tar x -C .travis/oracle --strip-components=1 -f v2.0.1.tar.gz
+  - tar x -C .travis/oracle --strip-components=1 -f v2.0.2.tar.gz
   - .travis/oracle/download.sh
   - .travis/oracle/install.sh
 
