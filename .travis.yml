@@ -52,7 +52,7 @@ before_script:
     grant select any dictionary to ${DB_USER};
     exit
     SQL
-  - sqlplus -L -S ${DB_USER}/${DB_PASS} @travis/SetupOracleTestEnv.sql
+  - ./travis/oracle/setupOracle.sh
 
 script:
   - python manage.py migrate --noinput
