@@ -8,3 +8,5 @@ CREATE TABLE SWVPTRM_UP_WEB (
 
 INSERT INTO SWVPTRM_UP_WEB
   VALUES ('201635', 'R2', 'Fun Term', sysdate, sysdate + 100);
+
+exit
