@@ -52,6 +52,19 @@ before_script:
     grant select any dictionary to ${DB_USER};
     exit
     SQL
+  - |
+    sqlplus -L -S ${DB_USER}/${DB_PASS} << SQL
+    CREATE TABLE SWVPTRM_UP_WEB (
+      TERM VARCHAR2(100),
+      PTRM VARCHAR2(100),
+      PTRM_DESC VARCHAR2(200),
+      PTRM_START DATE,
+      PTRM_END DATE
+    );
+    INSERT INTO SWVPTRM_UP_WEB
+    VALUES ('201635', 'R2', 'Fun Term', sysdate, sysdate + 100);
+    exit
+    SQL
 
 script:
   - python manage.py migrate --noinput
